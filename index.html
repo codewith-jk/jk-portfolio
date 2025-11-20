@@ -1,120 +1,865 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Simple Signup Form</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jajati Keshari Nayak | Full Stack Developer</title>
   <style>
-    :root { font-family: system-ui, Arial, sans-serif; }
-    body { background:#f7f7fb; margin:0; padding:2rem; display:grid; place-items:center; }
-    .card { width:100%; max-width:480px; background:#fff; padding:1.5rem; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.08); }
-    h1 { margin:0 0 1rem; font-size:1.4rem; }
-    label { display:block; font-size:.9rem; margin:.6rem 0 .25rem; }
-    input, select, button, textarea {
-      width:100%; padding:.7rem .8rem; border:1px solid #ddd; border-radius:10px; outline:0;
+    :root {
+      --bg: #050816;
+      --bg-soft: #0f172a;
+      --accent: #22c55e;
+      --accent-soft: rgba(34, 197, 94, 0.1);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --card: #020617;
+      --border: #1f2937;
+      --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.45);
+      --radius-lg: 18px;
+      --radius-full: 999px;
+      --transition: 200ms ease;
     }
-    .row { display:flex; gap:.8rem; }
-    .row > div { flex:1; }
-    .hint { font-size:.8rem; color:#666; }
-    .error { color:#b00020; font-size:.85rem; margin-top:.25rem; display:none; }
-    .chips { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.5rem; }
-    .chip { padding:.35rem .6rem; border-radius:999px; background:#f0f2ff; border:1px solid #e1e6ff; font-size:.8rem; }
-    button { background:#111827; color:#fff; border:none; margin-top:1rem; cursor:pointer; }
-    button:hover { filter:brightness(1.05); }
-    pre { background:#0b1220; color:#e6f0ff; padding:1rem; border-radius:12px; overflow:auto; }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #111827 0, #020617 40%, #000 100%);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 0;
+      margin: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Layout */
+    .page {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 24px 16px 64px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-full);
+      background: radial-gradient(circle at 30% 0, #4ade80, #22c55e 40%, #16a34a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      color: #020617;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .logo-text {
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      font-size: 14px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    nav {
+      display: flex;
+      gap: 16px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    nav a {
+      position: relative;
+      padding-bottom: 4px;
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      border-radius: 99px;
+      background: linear-gradient(to right, #22c55e, #4ade80);
+      transition: width var(--transition);
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.4fr);
+      gap: 32px;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .hero-text {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--muted);
+      width: fit-content;
+    }
+
+    .hero-tag-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
+    }
+
+    .hero-title {
+      font-size: clamp(30px, 4vw, 38px);
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .hero-title span {
+      background: linear-gradient(to right, #4ade80, #22c55e, #a3e635);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 520px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .btn-primary,
+    .btn-ghost {
+      border-radius: var(--radius-full);
+      font-size: 14px;
+      padding: 9px 16px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition),
+        border-color var(--transition), color var(--transition);
+    }
+
+    .btn-primary {
+      background: linear-gradient(to right, #22c55e, #16a34a);
+      color: #020617;
+      font-weight: 600;
+      box-shadow: 0 12px 30px rgba(34, 197, 94, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 40px rgba(34, 197, 94, 0.5);
+    }
+
+    .btn-ghost {
+      background: rgba(15, 23, 42, 0.85);
+      border-color: rgba(148, 163, 184, 0.4);
+      color: var(--muted);
+    }
+
+    .btn-ghost:hover {
+      border-color: #22c55e;
+      color: #e5e7eb;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .hero-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.9);
+    }
+
+    .hero-card {
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), #020617);
+      border-radius: 26px;
+      padding: 18px 18px 16px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at 0 0, rgba(52, 211, 153, 0.09) 0, transparent 45%);
+      opacity: 0.9;
+      z-index: -1;
+    }
+
+    .hero-badge {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .hero-role {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .hero-location {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .pill {
+      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--muted);
+      backdrop-filter: blur(8px);
+    }
+
+    .metrics {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .metric {
+      flex: 1;
+      border-radius: 14px;
+      padding: 10px 10px 8px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      font-size: 11px;
+    }
+
+    .metric-label {
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .metric-value {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .metric-sub {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .status-pill {
+      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.6);
+      color: #bbf7d0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.8);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 40px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .section-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* Grid cards */
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    @media (min-width: 768px) {
+      .grid-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.96);
+      border-radius: var(--radius-lg);
+      padding: 14px 14px 13px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition),
+        background var(--transition);
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+      border-color: rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.98);
+    }
+
+    .card-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .card-tag {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      color: var(--muted);
+    }
+
+    .card-body {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .chip {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      color: #9ca3af;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .card-link {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #a5b4fc;
+    }
+
+    .card-link span {
+      font-size: 9px;
+      transform: translateY(1px);
+    }
+
+    /* Skills */
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .skill-pill {
+      font-size: 12px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--muted);
+    }
+
+    .skill-pill.primary {
+      border-color: rgba(34, 197, 94, 0.7);
+      background: rgba(34, 197, 94, 0.06);
+      color: #bbf7d0;
+    }
+
+    /* Contact */
+    .contact-card {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      align-items: center;
+      justify-content: space-between;
+      background: radial-gradient(circle at 0 0, rgba(52, 211, 153, 0.15), rgba(15, 23, 42, 0.98) 45%);
+      border-radius: 22px;
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      padding: 16px 16px 15px;
+      box-shadow: 0 18px 50px rgba(34, 197, 94, 0.35);
+    }
+
+    .contact-text {
+      max-width: 420px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .contact-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #e5e7eb;
+    }
+
+    .contact-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .contact-note {
+      font-size: 11px;
+      color: #a3e635;
+    }
+
+    footer {
+      margin-top: 28px;
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      border-top: 1px solid rgba(31, 41, 55, 0.9);
+      padding-top: 14px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav {
+        display: none;
+      }
+
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .hero-card {
+        order: -1;
+      }
+
+      .page {
+        padding-inline: 14px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Signup</h1>
-
-    <form id="signupForm" novalidate>
-      <div class="row">
+  <div class="page">
+    <header>
+      <div class="logo">
+        <div class="logo-circle">JK</div>
         <div>
-          <label for="firstName">First name</label>
-          <input id="firstName" name="firstName" required />
-          <div class="error" id="err-firstName">First name is required.</div>
-        </div>
-        <div>
-          <label for="lastName">Last name</label>
-          <input id="lastName" name="lastName" required />
-          <div class="error" id="err-lastName">Last name is required.</div>
+          <div class="logo-text">Full Stack Developer</div>
         </div>
       </div>
+      <nav>
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#experience">Experience</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
 
-      <label for="email">Email</label>
-      <input id="email" name="email" type="email" required />
-      <div class="hint">We’ll never share your email.</div>
-      <div class="error" id="err-email">Please enter a valid email.</div>
+    <main>
+      <!-- Hero -->
+      <section class="hero">
+        <div class="hero-text">
+          <div class="hero-tag">
+            <div class="hero-tag-dot"></div>
+            Open to full-time & freelance opportunities
+          </div>
+          <h1 class="hero-title">
+            Hi, I'm <span>Jajati Keshari (JK)</span><br />
+            Full Stack Developer (MERN)
+          </h1>
+          <p class="hero-subtitle">
+            I build end-to-end web applications using <strong>React, Node.js, Express, MongoDB & MySQL</strong>.
+            I focus on clean architecture, reusable components, and APIs that scale with real business needs.
+          </p>
 
-      <label for="password">Password</label>
-      <input id="password" name="password" type="password" minlength="6" required />
-      <div class="error" id="err-password">Min 6 characters.</div>
+          <div class="hero-actions">
+            <a href="mailto:jajatikesharinayak95@gmail.com" class="btn-primary">
+              📩 Hire / Contact Me
+            </a>
+            <a href="https://github.com/codewith-jk" target="_blank" class="btn-ghost">
+              ⭐ View My GitHub
+            </a>
+          </div>
 
-      <label>Skills (pick a few)</label>
-      <div class="chips">
-        <label class="chip"><input type="checkbox" name="skills" value="HTML" /> HTML</label>
-        <label class="chip"><input type="checkbox" name="skills" value="CSS" /> CSS</label>
-        <label class="chip"><input type="checkbox" name="skills" value="JavaScript" /> JavaScript</label>
-        <label class="chip"><input type="checkbox" name="skills" value="React" /> React</label>
-        <label class="chip"><input type="checkbox" name="skills" value="Node.js" /> Node.js</label>
-      </div>
+          <div class="hero-meta">
+            <span><span class="dot"></span> 3+ years frontend experience</span>
+            <span><span class="dot"></span> 1.6+ years Node.js backend</span>
+            <span><span class="dot"></span> Based in Bangalore, India</span>
+          </div>
+        </div>
 
-      <label for="role">Role</label>
-      <select id="role" name="role">
-        <option value="frontend">Frontend Developer</option>
-        <option value="backend">Backend Developer</option>
-        <option value="fullstack">Full-Stack Developer</option>
-      </select>
+        <aside class="hero-card" aria-label="Developer summary">
+          <div class="hero-badge">Profile Snapshot</div>
+          <div class="hero-role">MERN Stack & Full Stack Developer</div>
+          <div class="hero-location">Bangalore · Remote & On-site</div>
 
-      <button type="submit">Create Account</button>
-    </form>
+          <div class="pill-row">
+            <div class="pill">React & Modern UI</div>
+            <div class="pill">Node.js & REST APIs</div>
+            <div class="pill">MongoDB & MySQL</div>
+            <div class="pill">Git · Postman · CI Basics</div>
+          </div>
 
-    <h2 style="margin-top:1.5rem;font-size:1.1rem;">Submitted Data</h2>
-    <pre id="output">{ }</pre>
+          <div class="metrics">
+            <div class="metric">
+              <div class="metric-label">Frontend</div>
+              <div class="metric-value">3+ yrs</div>
+              <div class="metric-sub">React, HTML, CSS, JS</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Backend</div>
+              <div class="metric-value">1.6 yrs</div>
+              <div class="metric-sub">Node.js, Express, APIs</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Databases</div>
+              <div class="metric-value">SQL & NoSQL</div>
+              <div class="metric-sub">MongoDB, MySQL</div>
+            </div>
+          </div>
+
+          <div class="status-pill">
+            <span class="status-pill-dot"></span>
+            Available for opportunities
+          </div>
+        </aside>
+      </section>
+
+      <!-- About -->
+      <section id="about">
+        <div class="section-header">
+          <h2 class="section-title">About Me</h2>
+          <p class="section-subtitle">Who I am & how I work</p>
+        </div>
+        <div class="card">
+          <p class="card-body">
+            I'm a <strong>Full Stack Developer</strong> with over <strong>3 years of experience in frontend</strong> and
+            around <strong>1.6 years in backend development with Node.js</strong>. I build complete web solutions—from
+            responsive user interfaces to secure APIs and database layers.
+          </p>
+          <p class="card-body">
+            I enjoy turning real-world problems into working products. I pay attention to <strong>code quality,
+            performance and clean folder structure</strong>, and I’m comfortable working with RESTful APIs, authentication,
+            dashboards and admin panels.
+          </p>
+          <p class="card-body">
+            I'm always learning, improving, and looking for opportunities where I can contribute to
+            <strong>scalable products, dashboards, management systems and business tools.</strong>
+          </p>
+        </div>
+      </section>
+
+      <!-- Skills -->
+      <section id="skills">
+        <div class="section-header">
+          <h2 class="section-title">Tech Stack</h2>
+          <p class="section-subtitle">The tools I use to build products</p>
+        </div>
+        <div class="card">
+          <div class="skills-grid">
+            <span class="skill-pill primary">JavaScript (ES6+)</span>
+            <span class="skill-pill primary">React.js</span>
+            <span class="skill-pill primary">Node.js</span>
+            <span class="skill-pill primary">Express.js</span>
+            <span class="skill-pill primary">MERN Stack</span>
+
+            <span class="skill-pill">HTML5</span>
+            <span class="skill-pill">CSS3 / Flexbox / Grid</span>
+            <span class="skill-pill">MongoDB</span>
+            <span class="skill-pill">MySQL</span>
+            <span class="skill-pill">RESTful APIs</span>
+
+            <span class="skill-pill">Git & GitHub</span>
+            <span class="skill-pill">Postman / Thunder Client</span>
+            <span class="skill-pill">Authentication & JWT</span>
+            <span class="skill-pill">Responsive Web Design</span>
+            <span class="skill-pill">Basic CI/CD Concepts</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Projects -->
+      <section id="projects">
+        <div class="section-header">
+          <h2 class="section-title">Selected Projects</h2>
+          <p class="section-subtitle">Some of the systems and apps I've worked on</p>
+        </div>
+
+        <div class="grid grid-2">
+          <article class="card">
+            <div class="card-title-row">
+              <h3 class="card-title">Inventory Management System</h3>
+              <span class="card-tag">MERN · Dashboard</span>
+            </div>
+            <p class="card-body">
+              A full-stack inventory system to manage stock, categories, purchase and sales data with secure
+              authentication and role-based access. Includes dashboards and detailed reports for business decisions.
+            </p>
+            <div class="chip-row">
+              <span class="chip">React</span>
+              <span class="chip">Node.js</span>
+              <span class="chip">MongoDB</span>
+              <span class="chip">REST API</span>
+            </div>
+            <div class="card-footer">
+              <span>Admin panel · CRUD · Auth</span>
+              <!-- 🔴 REPLACE WITH REAL LINK LATER -->
+              <a href="#" class="card-link">
+                VIEW CODE <span>↗</span>
+              </a>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-title-row">
+              <h3 class="card-title">Farmers Marketing Website</h3>
+              <span class="card-tag">Full Stack</span>
+            </div>
+            <p class="card-body">
+              A platform to connect farmers and buyers, showcase products, and manage enquiries. Built with responsive UI
+              and backend APIs for product listings and user communication.
+            </p>
+            <div class="chip-row">
+              <span class="chip">MERN Stack</span>
+              <span class="chip">Responsive UI</span>
+              <span class="chip">Business Logic</span>
+            </div>
+            <div class="card-footer">
+              <span>Real-world domain · Listings</span>
+              <a href="#" class="card-link">
+                VIEW CODE <span>↗</span>
+              </a>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-title-row">
+              <h3 class="card-title">Press Release App</h3>
+              <span class="card-tag">Web App</span>
+            </div>
+            <p class="card-body">
+              A web application to manage press releases, with forms, status tracking, and search/filter options for
+              easy access to records.
+            </p>
+            <div class="chip-row">
+              <span class="chip">React</span>
+              <span class="chip">Node.js</span>
+              <span class="chip">Forms & Filters</span>
+            </div>
+            <div class="card-footer">
+              <span>Productivity · CRUD</span>
+              <a href="#" class="card-link">
+                VIEW CODE <span>↗</span>
+              </a>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-title-row">
+              <h3 class="card-title">AMBS – Appointment & Material Booking</h3>
+              <span class="card-tag">Management System</span>
+            </div>
+            <p class="card-body">
+              A system to book appointments and materials, track booking status and manage schedules. Focused on clean UI
+              and smooth flows.
+            </p>
+            <div class="chip-row">
+              <span class="chip">MERN</span>
+              <span class="chip">Scheduling</span>
+              <span class="chip">Business Workflow</span>
+            </div>
+            <div class="card-footer">
+              <span>Bookings · Status tracking</span>
+              <a href="#" class="card-link">
+                VIEW CODE <span>↗</span>
+              </a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Experience -->
+      <section id="experience">
+        <div class="section-header">
+          <h2 class="section-title">Experience</h2>
+          <p class="section-subtitle">Where I've applied my skills</p>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <div class="card-title-row">
+              <h3 class="card-title">Full Stack Developer</h3>
+              <span class="card-tag">React · Node.js</span>
+            </div>
+            <p class="card-body">
+              Worked on building and maintaining full-stack applications using MERN stack, focusing on modular frontend
+              components, REST APIs, and database design. Collaborated on real features like dashboards, admin panels, and
+              management tools.
+            </p>
+            <div class="chip-row">
+              <span class="chip">MERN Stack</span>
+              <span class="chip">API Design</span>
+              <span class="chip">Problem Solving</span>
+            </div>
+            <div class="card-footer">
+              <span>3+ years of hands-on development</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Contact -->
+      <section id="contact">
+        <div class="section-header">
+          <h2 class="section-title">Let's Work Together</h2>
+          <p class="section-subtitle">I'm open to full-time, remote, and freelance opportunities</p>
+        </div>
+        <div class="contact-card">
+          <div class="contact-text">
+            <div class="contact-title">Tell me about your project or role</div>
+            <p>
+              If you're looking for a developer who can own both frontend and backend and deliver complete features,
+              dashboards, or internal tools, I'd be happy to connect.
+            </p>
+            <p class="contact-note">
+              Prefer clear communication, proper timelines, and long-term collaboration.
+            </p>
+          </div>
+          <div class="contact-actions">
+            <a href="mailto:jajatikesharinayak95@gmail.com" class="btn-primary">📩 Email Me</a>
+            <a href="https://github.com/codewith-jk" target="_blank" class="btn-ghost">
+              🧑‍💻 My GitHub
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      © <span id="year"></span> Jajati Keshari · Built with HTML, CSS & 💚
+    </footer>
   </div>
 
   <script>
-    const $ = (id) => document.getElementById(id);
-    const form = $("signupForm");
-    const output = $("output");
-
-    const show = (id, on) => { const el = $(id); if (el) el.style.display = on ? "block" : "none"; };
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      // Basic validation
-      const firstName = $("firstName").value.trim();
-      const lastName  = $("lastName").value.trim();
-      const email     = $("email").value.trim();
-      const password  = $("password").value;
-      const role      = $("role").value;
-
-      let valid = true;
-      show("err-firstName", !firstName); valid &= !!firstName;
-      show("err-lastName",  !lastName);  valid &= !!lastName;
-
-      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      show("err-email", !emailOk); valid &= emailOk;
-
-      const passOk = password.length >= 6;
-      show("err-password", !passOk); valid &= passOk;
-
-      if (!valid) return;
-
-      // Collect skills
-      const skills = Array.from(form.querySelectorAll('input[name="skills"]:checked')).map(i => i.value);
-
-      const payload = { firstName, lastName, email, role, skills };
-
-      // Show it (simulating a submit to backend)
-      output.textContent = JSON.stringify(payload, null, 2);
-
-      // Example: send to API if you have one
-      // fetch("http://localhost:4000/users", { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(payload) });
-      form.reset();
-    });
+    // Set current year automatically
+    document.getElementById("year").textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
