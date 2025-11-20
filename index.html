@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Simple Signup Form</title>
+  <style>
+    :root { font-family: system-ui, Arial, sans-serif; }
+    body { background:#f7f7fb; margin:0; padding:2rem; display:grid; place-items:center; }
+    .card { width:100%; max-width:480px; background:#fff; padding:1.5rem; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.08); }
+    h1 { margin:0 0 1rem; font-size:1.4rem; }
+    label { display:block; font-size:.9rem; margin:.6rem 0 .25rem; }
+    input, select, button, textarea {
+      width:100%; padding:.7rem .8rem; border:1px solid #ddd; border-radius:10px; outline:0;
+    }
+    .row { display:flex; gap:.8rem; }
+    .row > div { flex:1; }
+    .hint { font-size:.8rem; color:#666; }
+    .error { color:#b00020; font-size:.85rem; margin-top:.25rem; display:none; }
+    .chips { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.5rem; }
+    .chip { padding:.35rem .6rem; border-radius:999px; background:#f0f2ff; border:1px solid #e1e6ff; font-size:.8rem; }
+    button { background:#111827; color:#fff; border:none; margin-top:1rem; cursor:pointer; }
+    button:hover { filter:brightness(1.05); }
+    pre { background:#0b1220; color:#e6f0ff; padding:1rem; border-radius:12px; overflow:auto; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Signup</h1>
+
+    <form id="signupForm" novalidate>
+      <div class="row">
+        <div>
+          <label for="firstName">First name</label>
+          <input id="firstName" name="firstName" required />
+          <div class="error" id="err-firstName">First name is required.</div>
+        </div>
+        <div>
+          <label for="lastName">Last name</label>
+          <input id="lastName" name="lastName" required />
+          <div class="error" id="err-lastName">Last name is required.</div>
+        </div>
+      </div>
+
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" required />
+      <div class="hint">We’ll never share your email.</div>
+      <div class="error" id="err-email">Please enter a valid email.</div>
+
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" minlength="6" required />
+      <div class="error" id="err-password">Min 6 characters.</div>
+
+      <label>Skills (pick a few)</label>
+      <div class="chips">
+        <label class="chip"><input type="checkbox" name="skills" value="HTML" /> HTML</label>
+        <label class="chip"><input type="checkbox" name="skills" value="CSS" /> CSS</label>
+        <label class="chip"><input type="checkbox" name="skills" value="JavaScript" /> JavaScript</label>
+        <label class="chip"><input type="checkbox" name="skills" value="React" /> React</label>
+        <label class="chip"><input type="checkbox" name="skills" value="Node.js" /> Node.js</label>
+      </div>
+
+      <label for="role">Role</label>
+      <select id="role" name="role">
+        <option value="frontend">Frontend Developer</option>
+        <option value="backend">Backend Developer</option>
+        <option value="fullstack">Full-Stack Developer</option>
+      </select>
+
+      <button type="submit">Create Account</button>
+    </form>
+
+    <h2 style="margin-top:1.5rem;font-size:1.1rem;">Submitted Data</h2>
+    <pre id="output">{ }</pre>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const form = $("signupForm");
+    const output = $("output");
+
+    const show = (id, on) => { const el = $(id); if (el) el.style.display = on ? "block" : "none"; };
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      // Basic validation
+      const firstName = $("firstName").value.trim();
+      const lastName  = $("lastName").value.trim();
+      const email     = $("email").value.trim();
+      const password  = $("password").value;
+      const role      = $("role").value;
+
+      let valid = true;
+      show("err-firstName", !firstName); valid &= !!firstName;
+      show("err-lastName",  !lastName);  valid &= !!lastName;
+
+      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      show("err-email", !emailOk); valid &= emailOk;
+
+      const passOk = password.length >= 6;
+      show("err-password", !passOk); valid &= passOk;
+
+      if (!valid) return;
+
+      // Collect skills
+      const skills = Array.from(form.querySelectorAll('input[name="skills"]:checked')).map(i => i.value);
+
+      const payload = { firstName, lastName, email, role, skills };
+
+      // Show it (simulating a submit to backend)
+      output.textContent = JSON.stringify(payload, null, 2);
+
+      // Example: send to API if you have one
+      // fetch("http://localhost:4000/users", { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(payload) });
+      form.reset();
+    });
+  </script>
+</body>
+</html>
